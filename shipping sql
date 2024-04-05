@@ -1,1 +1,368 @@
+create database shipping;
+use shipping;
+
+-- Create ShippingLines table
+CREATE TABLE ShippingLines (
+    line_id INT PRIMARY KEY AUTO_INCREMENT,
+    line_name VARCHAR(255) NOT NULL,
+    headquarters VARCHAR(255),
+    website VARCHAR(255)
+);
+
+-- Create Vessels table
+CREATE TABLE Vessels (
+    vessel_id INT PRIMARY KEY AUTO_INCREMENT,
+    line_id INT,
+    vessel_name VARCHAR(255) NOT NULL,
+    vessel_type VARCHAR(100),
+    capacity_in_TEU INT,
+    FOREIGN KEY (line_id) REFERENCES ShippingLines(line_id)
+);
+
+-- Create Routes table
+CREATE TABLE Routes (
+    route_id INT PRIMARY KEY AUTO_INCREMENT,
+    route_name VARCHAR(255) NOT NULL,
+    origin_port VARCHAR(255),
+    destination_port VARCHAR(255),
+    Price DECIMAL(10, 2)
+);
+
+-- Create Schedules table
+CREATE TABLE Schedules (
+    schedule_id INT PRIMARY KEY AUTO_INCREMENT,
+    vessel_id INT,
+    route_id INT,
+    departure_time DATETIME,
+    arrival_time DATETIME,
+    FOREIGN KEY (vessel_id) REFERENCES Vessels(vessel_id),
+    FOREIGN KEY (route_id) REFERENCES Routes(route_id)
+);
+
+-- Create Cargo table (optional, if you want to track cargo information)
+CREATE TABLE Cargo (
+    cargo_id INT PRIMARY KEY AUTO_INCREMENT,
+    schedule_id INT,
+    cargo_description TEXT,
+    quantity INT,
+    weight DECIMAL(10, 2),
+    FOREIGN KEY (schedule_id) REFERENCES Schedules(schedule_id)
+);
+
+
+-- Insert values into ShippingLines table
+INSERT INTO ShippingLines (line_ID,line_name, headquarters, website) VALUES
+(1,'Maersk Line', 'Copenhagen, Denmark', 'https://www.maersk.com'),
+(2,'MSC Mediterranean Shipping Company', 'Geneva, Switzerland', 'https://www.msc.com'),
+(3,'CMA CGM', 'Marseille, France', 'https://www.cma-cgm.com'),
+(4,'Hapag-Lloyd', 'Hamburg, Germany', 'https://www.hapag-lloyd.com'),
+(5,'Evergreen Line', 'Taipei, Taiwan', 'https://www.evergreen-line.com'),
+(6,'Cosco Shipping Lines', 'Shanghai, China', 'https://www.cosco-shipping.com'),
+(7,'Ocean Network Express (ONE)', 'Singapore', 'https://www.one-line.com'),
+(8,'Yang Ming Marine Transport Corporation', 'Keelung, Taiwan', 'https://www.yangming.com'),
+(9,'ZIM Integrated Shipping Services', 'Haifa, Israel', 'https://www.zim.com'),
+(10,'Wan Hai Lines', 'Taipei, Taiwan', 'https://www.wanhai.com');
+
+
+-- Insert values into Vessels table
+INSERT INTO Vessels (VESSEL_id,line_id, vessel_name, vessel_type, capacity_in_TEU) VALUES
+-- Company 1: Maersk Line
+(1001,1, 'Maersk E-class', 'Container Ship', 15000),
+(1002,1, 'Maersk Triple E-class', 'Container Ship', 18270),
+(1003,1, 'Maersk G-class', 'Container Ship', 21000),
+-- Company 2: MSC Mediterranean Shipping Company
+(1004,2, 'MSC Gulsun', 'Container Ship', 23200),
+(1005,2, 'MSC Mina', 'Container Ship', 23600),
+(1006,2, 'MSC Samar', 'Container Ship', 23850),
+-- Company 3: CMA CGM
+(1007,3, 'CMA CGM Antoine de Saint Exupery', 'Container Ship', 20200),
+(1008,3, 'CMA CGM Jean Mermoz', 'Container Ship', 20000),
+(1009,3, 'CMA CGM Benjamin Franklin', 'Container Ship', 18000),
+-- Company 4: Hapag-Lloyd
+(1010,4, 'Hapag-Lloyd Al Jmeliyah', 'Container Ship', 23700),
+(1011,4, 'Hapag-Lloyd Afif', 'Container Ship', 23600),
+(1012,4, 'Hapag-Lloyd Amman', 'Container Ship', 23500),
+-- Company 5: Evergreen Line
+(1013,5, 'Ever Ace', 'Container Ship', 23900),
+(1014,5, 'Ever Globe', 'Container Ship', 23600),
+(1015,5, 'Ever Goods', 'Container Ship', 23400),
+-- Company 6: Cosco Shipping Lines
+(1016,6, 'Cosco Shipping Leo', 'Container Ship', 21000),
+(1017,6, 'Cosco Shipping Taurus', 'Container Ship', 20000),
+(1018,6, 'Cosco Shipping Scorpio', 'Container Ship', 19200),
+-- Company 7: Ocean Network Express (ONE)
+(1019,7, 'ONE Apus', 'Container Ship', 14000),
+(1020,7, 'ONE Columba', 'Container Ship', 14000),
+(1021,7, 'ONE Cygnus', 'Container Ship', 14000),
+-- Company 8: Yang Ming Marine Transport Corporation
+(1022,8, 'YM Welcome', 'Container Ship', 14000),
+(1023,8, 'YM Witness', 'Container Ship', 14000),
+(1024,8, 'YM Wellbeing', 'Container Ship', 14000),
+-- Company 9: ZIM Integrated Shipping Services
+(1025,9, 'ZIM San Francisco', 'Container Ship', 10000),
+(1026,9, 'ZIM New York', 'Container Ship', 10000),
+(1027,9, 'ZIM Vancouver', 'Container Ship', 10000),
+-- Company 10: Wan Hai Lines
+(1028,10, 'Wan Hai 222', 'Container Ship', 6700),
+(1029,10, 'Wan Hai 333', 'Container Ship', 6700),
+(1030,10, 'Wan Hai 444', 'Container Ship', 6700);
+
+INSERT INTO Routes (route_id,route_name, origin_port, destination_port, Price) VALUES
+-- Route 1
+(1,'Asia-Europe', 'Shanghai', 'Rotterdam', 10325.6),
+-- Route 2
+(2,'Trans-Pacific Eastbound', 'Shanghai', 'Los Angeles', 5830.4),
+-- Route 3
+(3,'Trans-Pacific Westbound', 'Los Angeles', 'Shanghai', 5830.4),
+-- Route 4
+(4,'Asia-North America', 'Shanghai', 'New York', 12138.8),
+-- Route 5
+(5,'North America-Asia', 'New York', 'Shanghai', 12138.8),
+-- Route 6
+(6,'Europe-North America', 'Rotterdam', 'New York', 3463.2),
+-- Route 7
+(7,'North America-Europe', 'New York', 'Rotterdam', 3463.2),
+-- Route 8
+(8,'Intra-Asia', 'Singapore', 'Hong Kong', 1608.0),
+-- Route 9
+(9,'Asia-Australia', 'Shanghai', 'Sydney', 5252.0),
+-- Route 10
+(10,'Australia-Asia', 'Sydney', 'Shanghai', 5252.0),
+-- Route 11
+(11,'Europe-Australia', 'Rotterdam', 'Sydney', 10549.6),
+-- Route 12
+(12,'Australia-Europe', 'Sydney', 'Rotterdam', 10549.6),
+-- Route 13
+(13,'North America-Australia', 'Los Angeles', 'Sydney', 7098.4),
+-- Route 14
+(14,'Australia-North America', 'Sydney', 'Los Angeles', 7098.4),
+-- Route 15
+(15,'South America-Europe', 'Santos', 'Rotterdam', 5639.2),
+-- Route 16
+(16,'Europe-South America', 'Rotterdam', 'Santos', 5639.2),
+-- Route 17
+(17,'South America-North America', 'Santos', 'New York', 4756.8),
+-- Route 18
+(18,'North America-South America', 'New York', 'Santos', 4756.8),
+-- Route 19
+(19,'Asia-South America', 'Shanghai', 'Santos', 9500.8),
+-- Route 20
+(20,'South America-Asia', 'Santos', 'Shanghai', 9500.8),
+-- Route 21
+(21,'Europe-Africa', 'Rotterdam', 'Durban', 5416.0),
+-- Route 22
+(22,'Africa-Europe', 'Durban', 'Rotterdam', 5416.0),
+-- Route 23
+(23,'Asia-Africa', 'Shanghai', 'Durban', 8658.4),
+-- Route 24
+(24,'Africa-Asia', 'Durban', 'Shanghai', 8658.4),
+-- Route 25
+(25,'South America-Africa', 'Santos', 'Durban', 5260.0),
+-- Route 26
+(26,'Africa-South America', 'Durban', 'Santos', 5260.0),
+-- Route 27
+(27,'North America-Africa', 'New York', 'Durban', 7890.0),
+-- Route 28
+(28,'Africa-North America', 'Durban', 'New York', 7890.0),
+-- Route 29
+(29,'Europe-North America via Arctic', 'Rotterdam', 'Seattle', 4227.2),
+-- Route 30
+(30,'North America-Europe via Arctic', 'Seattle', 'Rotterdam', 4227.2),
+-- Route 31
+(31,'Asia-Europe via Arctic', 'Shanghai', 'St. Petersburg', 5311.2),
+-- Route 32
+(32,'Europe-Asia via Arctic', 'St. Petersburg', 'Shanghai', 5311.2),
+-- Route 33
+(33,'North America-Asia via Arctic', 'Seattle', 'Vladivostok', 2571.2),
+-- Route 34
+(34,'Asia-North America via Arctic', 'Vladivostok', 'Seattle', 2571.2),
+-- Route 35
+(35,'Asia-Europe via Suez Canal', 'Shanghai', 'Hamburg', 5960.8),
+-- Route 36
+(36,'Europe-Asia via Suez Canal', 'Hamburg', 'Shanghai', 5960.8),
+-- Route 37
+(37,'North America-Europe via Panama Canal', 'New York', 'Antwerp', 3780.0),
+-- Route 38
+(38,'Europe-North America via Panama Canal', 'Antwerp', 'New York', 3780.0),
+-- Route 39
+(39,'Asia-North America via Panama Canal', 'Shanghai', 'Los Angeles', 6425.6),
+-- Route 40
+(40,'North America-Asia via Panama Canal', 'Los Angeles', 'Shanghai', 6425.6),
+-- Route 41
+(41,'Asia-South America via Cape of Good Hope', 'Shanghai', 'Santos', 10386.4),
+-- Route 42
+(42,'South America-Asia via Cape of Good Hope', 'Santos', 'Shanghai', 10386.4),
+-- Route 43
+(43,'Europe-South America via Cape of Good Hope', 'Rotterdam', 'Santos', 7813.2),
+-- Route 44
+(44,'South America-Europe via Cape of Good Hope', 'Santos', 'Rotterdam', 7813.2),
+-- Route 45
+(45,'North America-Africa via Cape of Good Hope', 'New York', 'Durban', 7233.6),
+-- Route 46
+(46,'Africa-North America via Cape of Good Hope', 'Durban', 'New York', 7233.6),
+-- Route 47
+(47,'Europe-Australia via Cape of Good Hope', 'Rotterdam', 'Sydney', 11616.0),
+-- Route 48
+(48,'Australia-Europe via Cape of Good Hope', 'Sydney', 'Rotterdam', 11616.0),
+-- Route 49
+(49,'Asia-Africa via Cape of Good Hope', 'Shanghai', 'Durban', 8013.6),
+-- Route 50
+(50,'Africa-Asia via Cape of Good Hope', 'Durban', 'Shanghai', 8013.6);
+
+
+INSERT INTO Schedules (schedule_id ,vessel_id, route_id, departure_time, arrival_time) VALUES
+-- Schedule for Vessel 1
+(2001,1001, 1, '2024-04-01 08:00:00', '2024-04-10 16:00:00'),
+-- Schedule for Vessel 2
+(2002,1002, 2, '2024-04-02 10:00:00', '2024-04-12 18:00:00'),
+-- Schedule for Vessel 3
+(2003,1003, 3, '2024-04-03 12:00:00', '2024-04-14 20:00:00'),
+-- Schedule for Vessel 4
+(2004,1004, 4, '2024-04-04 14:00:00', '2024-04-16 22:00:00'),
+-- Schedule for Vessel 5
+(2005,1005, 5, '2024-04-05 16:00:00', '2024-04-18 00:00:00'),
+-- Schedule for Vessel 6
+(2006,1006, 6, '2024-04-06 18:00:00', '2024-04-20 02:00:00'),
+-- Schedule for Vessel 7
+(2007,1007, 7, '2024-04-07 20:00:00', '2024-04-22 04:00:00'),
+-- Schedule for Vessel 8
+(2008,1008, 8, '2024-04-08 22:00:00', '2024-04-24 06:00:00'),
+-- Schedule for Vessel 9
+(2009,1009, 9, '2024-04-09 08:00:00', '2024-04-26 08:00:00'),
+-- Schedule for Vessel 10
+(2010,1010, 10, '2024-04-10 10:00:00', '2024-04-28 10:00:00'),
+-- Schedule for Vessel 11
+(2011,1011, 11, '2024-04-11 12:00:00', '2024-04-30 12:00:00'),
+-- Schedule for Vessel 12
+(2012,1012, 12, '2024-04-12 14:00:00', '2024-05-02 14:00:00'),
+-- Schedule for Vessel 13
+(2013,1013, 13, '2024-04-13 16:00:00', '2024-05-04 16:00:00'),
+-- Schedule for Vessel 14
+(2014,1014, 14, '2024-04-14 18:00:00', '2024-05-06 18:00:00'),
+-- Schedule for Vessel 15
+(2015,1015, 15, '2024-04-15 20:00:00', '2024-05-08 20:00:00'),
+-- Schedule for Vessel 16
+(2016,1016, 16, '2024-04-16 22:00:00', '2024-05-10 22:00:00'),
+-- Schedule for Vessel 17
+(2017,1017, 17, '2024-04-17 08:00:00', '2024-05-12 08:00:00'),
+-- Schedule for Vessel 18
+(2018,1018, 18, '2024-04-18 10:00:00', '2024-05-14 10:00:00'),
+-- Schedule for Vessel 19
+(2019,1019, 19, '2024-04-19 12:00:00', '2024-05-16 12:00:00'),
+-- Schedule for Vessel 20
+(2020,1020, 20, '2024-04-20 14:00:00', '2024-05-18 14:00:00'),
+-- Schedule for Vessel 21
+(2021,1021, 21, '2024-04-21 16:00:00', '2024-05-20 16:00:00'),
+-- Schedule for Vessel 22
+(2022,1022, 22, '2024-04-22 18:00:00', '2024-05-22 18:00:00'),
+-- Schedule for Vessel 23
+(2023,1023, 23, '2024-04-23 20:00:00', '2024-05-24 20:00:00'),
+-- Schedule for Vessel 24
+(2024,1024, 24, '2024-04-24 08:00:00', '2024-05-26 08:00:00'),
+-- Schedule for Vessel 25
+(2025,1025, 25, '2024-04-25 10:00:00', '2024-05-28 10:00:00'),
+-- Schedule for Vessel 26
+(2026,1026, 26, '2024-04-26 12:00:00', '2024-05-30 12:00:00'),
+-- Schedule for Vessel 27
+(2027,1027, 27, '2024-04-27 14:00:00', '2024-06-01 14:00:00'),
+-- Schedule for Vessel 28
+(2028,1028, 28, '2024-04-28 16:00:00', '2024-06-03 16:00:00'),
+-- Schedule for Vessel 29
+(2029,1029, 29, '2024-04-29 18:00:00', '2024-06-05 18:00:00'),
+-- Schedule for Vessel 30
+(2030,1030, 30, '2024-04-30 20:00:00', '2024-06-07 20:00:00');
+
+
+INSERT INTO Cargo (cargo_id, schedule_id, cargo_description, quantity, weight) 
+VALUES
+-- Cargo for Schedule 1
+(1, 2001, 'Electronics', 100, 5000),
+(2, 2002, 'Clothing', 200, 3000),
+(3, 2003, 'Furniture', 50, 7000),
+-- Cargo for Schedule 2
+(4, 2004, 'Food Items', 150, 2500),
+(5, 2005, 'Machinery Parts', 80, 4000),
+(6, 2006, 'Chemicals', 120, 3500),
+-- Cargo for Schedule 3
+(7, 2007, 'Automobile Parts', 200, 6000),
+(8, 2008, 'Raw Materials', 100, 4500),
+(9, 2009, 'Toys', 150, 2000),
+-- Cargo for Schedule 4
+(10, 2010, 'Medical Supplies', 120, 3000),
+(11, 2011, 'Books', 180, 4000),
+(12, 2012, 'Home Appliances', 80, 3500),
+-- Cargo for Schedule 5
+(13, 2013, 'Electrical Equipment', 100, 5000),
+(14, 2014, 'Sports Equipment', 150, 2500),
+(15, 2015, 'Cosmetics', 200, 3000);
+
+select * from ShippingLines;
+select * from Vessels;
+select * from Routes;
+select * from Schedules;
+select * from Cargo;
+
+SELECT * FROM Cargo WHERE cargo_id = 1;
+SELECT * FROM Vessels WHERE vessel_id = 1001;
+SELECT * FROM Routes WHERE route_id = 1;
+
+SELECT C.*, S.schedule_id, S.departure_time, S.arrival_time, V.vessel_name, V.vessel_type
+FROM Cargo C
+JOIN Schedules S ON C.schedule_id = S.schedule_id
+JOIN Vessels V ON S.vessel_id = V.vessel_id;
+
+SELECT S.*, V.vessel_name, V.vessel_type, V.capacity_in_TEU
+FROM Schedules S
+JOIN Vessels V ON S.vessel_id = V.vessel_id
+limit 5;
+
+SELECT V.*, SL.line_name
+FROM Vessels V
+JOIN ShippingLines SL ON V.line_id = SL.line_id
+limit 10;
+
+SELECT 
+    schedule_id,
+    vessel_id,
+    route_id,
+    departure_time,
+    arrival_time,
+    DATEDIFF(arrival_time, departure_time) AS duration_in_days
+FROM 
+    Schedules
+ORDER BY
+    duration_in_days DESC  -- Sort the schedules by duration in descending order
+LIMIT 3;  -- Limit the results to the top 3 rows
+
+SELECT 
+    schedule_id,
+    vessel_id,
+    route_id,
+    departure_time,
+    arrival_time,
+    DATEDIFF(arrival_time, departure_time) AS duration_in_days
+FROM 
+    Schedules
+ORDER BY
+    duration_in_days asc  -- Sort the schedules by duration in descending order
+LIMIT 3;  -- Limit the results to the top 3 rows
+
+
+SELECT 
+    s.schedule_id,
+    v.vessel_name,
+    r.origin_port,
+    r.destination_port,
+    s.departure_time,
+    s.arrival_time,
+    DATEDIFF(arrival_time, departure_time) AS duration_in_days,
+    r.price
+FROM 
+    Schedules s
+JOIN 
+    Vessels v ON s.vessel_id = v.vessel_id
+JOIN 
+    Routes r ON s.route_id = r.route_id
+    ORDER BY r.price DESC
+LIMIT 5;
 
